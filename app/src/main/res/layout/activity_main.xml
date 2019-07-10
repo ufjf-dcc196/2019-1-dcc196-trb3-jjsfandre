@@ -7,12 +7,45 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tituloApp"
+        style="@android:style/Widget.DeviceDefault.TextView.SpinnerItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Opa!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Hunter App"
+        android:textSize="30sp"
+        app:fontFamily="@font/chelsea_market"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="200dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tituloApp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnOpenCandidatos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Candidatos" />
+
+        <Button
+            android:id="@+id/btnOpenCategorias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Categorias" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
