@@ -26,10 +26,12 @@ public final class HunterAppContract {
         public static final String COLUMN_DESCRICAO = "descricao";
         public static final String COLUMN_INICIO = "inicio";
         public static final String COLUMN_FIM = "fim";
+        public static final String COLUMN_CATEGORIA = "categoriaId";
+        public static final String COLUMN_CANDIDATO = "candidatoId";
 
         public static final String CREATE_TABLE = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT)",TABLE_NAME, _ID, COLUMN_TITULO, COLUMN_DESCRICAO,
-                COLUMN_INICIO,COLUMN_FIM);
+                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER, %s INTEGER)",TABLE_NAME, _ID, COLUMN_TITULO, COLUMN_DESCRICAO,
+                COLUMN_INICIO,COLUMN_FIM,COLUMN_CATEGORIA,COLUMN_CANDIDATO);
 
         public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
 
@@ -51,10 +53,11 @@ public final class HunterAppContract {
         public static final String COLUMN_DESCRICAO = "descricao";
         public static final String COLUMN_DATA = "data";
         public static final String COLUMN_HORAS = "horas";
+        public static final String COLUMN_PRODUCAO = "producaoId";
 
         public static final String CREATE_TABLE = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "%s TEXT, %s TEXT, %s TEXT)",TABLE_NAME, _ID, COLUMN_DESCRICAO,
-                COLUMN_DATA,COLUMN_HORAS);
+                        "%s TEXT, %s TEXT, %s TEXT, %s INTEGER)",TABLE_NAME, _ID, COLUMN_DESCRICAO,
+                COLUMN_DATA,COLUMN_HORAS,COLUMN_PRODUCAO);
         public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
 
     }
