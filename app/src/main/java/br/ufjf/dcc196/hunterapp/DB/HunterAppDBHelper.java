@@ -2,8 +2,10 @@ package br.ufjf.dcc196.hunterapp.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import br.ufjf.dcc196.hunterapp.DB.HunterAppContract;
 
@@ -47,5 +49,28 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         values.put(HunterAppContract.Categoria.COLUMN_TITULO,"Categoria 3");
         db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
     }
+
+
+
+    public Cursor getCursorTodasAsCategorias(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sort = HunterAppContract.Categoria.COLUMN_TITULO + " ASC";
+        Cursor c = db.query(HunterAppContract.Categoria.TABLE_NAME, camposCategoria, null, null, null, null, sort);
+        return c;
+    }
+
+    public void deleteCategoriaById(String id, String titulo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String select = HunterAppContract.Categoria._ID+" = ?";
+
+        String[] selectArgs = {id};
+        db.delete(HunterAppContract.Categoria.TABLE_NAME,select,selectArgs);
+        Log.i("DBINFO", "DEL titulo: " + titulo);
+    }
+
+    private final String[] camposCategoria = {
+            HunterAppContract.Categoria._ID,
+            HunterAppContract.Categoria.COLUMN_TITULO
+    };
 
 }
