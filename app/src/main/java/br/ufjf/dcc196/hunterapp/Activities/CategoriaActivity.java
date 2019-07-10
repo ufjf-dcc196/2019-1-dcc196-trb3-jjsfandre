@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -14,7 +16,7 @@ import br.ufjf.dcc196.hunterapp.*;
 import br.ufjf.dcc196.hunterapp.Adapters.*;
 import br.ufjf.dcc196.hunterapp.DB.HunterAppDBHelper;
 
-public class CategoriaActivity extends AppCompatActivity {
+public class CategoriaActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener  {
 
     public CategoriaAdapter cAdapter;
     public static final int REQUEST_DETALHE_CATEGORIA = 300;
@@ -75,4 +77,34 @@ public class CategoriaActivity extends AppCompatActivity {
                     cAdapter.notifyItemRemoved(position);
                 }
             };
+
+    public void showMenuCategoria(View v){
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.menu_categoria);
+        popup.show();
+    }
+
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch(menuItem.getItemId()){
+            case R.id.addCategoria:
+                adicionarCategoria();
+                return true;
+            case R.id.listCandidatos:
+                listarCandidatos();
+                return true;
+            default:
+                return false;
+        }
+
+    }
+
+    private void adicionarCategoria(){
+
+    }
+    private void listarCandidatos(){
+
+    }
 }
