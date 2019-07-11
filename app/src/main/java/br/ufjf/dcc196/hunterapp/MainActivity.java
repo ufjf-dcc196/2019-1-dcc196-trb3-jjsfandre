@@ -25,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
         btnOpenCandidatos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"btnOpenCandidatos", Toast.LENGTH_LONG ).show();
+                Intent intent = new Intent(MainActivity.this, CandidatoActivity.class);
+
+                startActivityForResult(intent, REQUEST_CANDIDATOS);
             }
         });
         btnOpenCategorias.setOnClickListener(new View.OnClickListener() {
