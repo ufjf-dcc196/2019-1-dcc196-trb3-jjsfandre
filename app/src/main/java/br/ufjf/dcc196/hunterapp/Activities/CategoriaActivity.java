@@ -92,9 +92,6 @@ public class CategoriaActivity extends AppCompatActivity implements PopupMenu.On
             case R.id.addCategoria:
                 adicionarCategoria();
                 return true;
-            case R.id.listCandidatos:
-                listarCandidatos();
-                return true;
             default:
                 return false;
         }
@@ -102,9 +99,6 @@ public class CategoriaActivity extends AppCompatActivity implements PopupMenu.On
     }
 
     private void adicionarCategoria(){
-
-    }
-    private void listarCandidatos(){
 
     }
 }
