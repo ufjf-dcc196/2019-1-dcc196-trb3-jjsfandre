@@ -21,6 +21,13 @@ public class Candidato {
         this.perfil = perfil;
         this.email = email;
     }
+    public Candidato( String nome, String nascimento, String telefone, String perfil, String email) {
+        this.nome = nome;
+        this.nascimento = nascimento;
+        this.telefone = telefone;
+        this.perfil = perfil;
+        this.email = email;
+    }
 
     public Long getId() {
         return id;

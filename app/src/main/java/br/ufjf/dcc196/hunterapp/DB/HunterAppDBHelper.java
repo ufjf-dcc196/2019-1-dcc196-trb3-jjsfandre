@@ -10,7 +10,7 @@ import android.util.Log;
 import br.ufjf.dcc196.hunterapp.Model.*;
 
 public class HunterAppDBHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION=2;
+    public static final int DATABASE_VERSION=3;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -39,17 +39,41 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     private void addBaseData(SQLiteDatabase db){
         addCategoriaData(db);
+        addCandidatoData(db);
     }
 
     private void addCategoriaData(SQLiteDatabase db){
 
-        ContentValues values = new ContentValues();
-        values.put(HunterAppContract.Categoria.COLUMN_TITULO,"Categoria 1");
+        Categoria c1 = new Categoria();
+        c1.setTitulo("Categoria 1");
+        Categoria c2 = new Categoria();
+        c2.setTitulo("Categoria 2");
+        Categoria c3 = new Categoria();
+        c3.setTitulo("Categoria 3");
+
+        ContentValues values = populateContentValueCategoria(c1);
         db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
-        values.put(HunterAppContract.Categoria.COLUMN_TITULO,"Categoria 2");
+
+        values = populateContentValueCategoria(c2);
         db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
-        values.put(HunterAppContract.Categoria.COLUMN_TITULO,"Categoria 3");
+
+        values = populateContentValueCategoria(c3);
         db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
+    }
+
+    private void addCandidatoData(SQLiteDatabase db){
+
+        Candidato c1 = new Candidato("Candidato 1", "30/03/1994","3215-0101","perfil 1","mail1@mail.com");
+        ContentValues values = populateContentValueCandidato(c1);
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
+
+        Candidato c2 = new Candidato("Candidato 2", "30/03/1996","3215-0202","perfil 2","mail2@mail.com");
+        values = populateContentValueCandidato(c2);
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
+
+        Candidato c3 = new Candidato("Candidato 3", "30/03/1998","3215-0303","perfil 3","mail3@mail.com");
+        values = populateContentValueCandidato(c3);
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
     }
 
     //endregion
@@ -122,6 +146,17 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
         return values;
 
+    }
+
+    private ContentValues populateContentValueCandidato(Candidato c){
+        ContentValues values = new ContentValues();
+        values.put(HunterAppContract.Candidato.COLUMN_NOME,c.getNome());
+        values.put(HunterAppContract.Candidato.COLUMN_NASCIMENTO,c.getNascimento());
+        values.put(HunterAppContract.Candidato.COLUMN_TELEFONE,c.getTelefone());
+        values.put(HunterAppContract.Candidato.COLUMN_PERFIL,c.getPerfil());
+        values.put(HunterAppContract.Candidato.COLUMN_EMAIL,c.getEmail());
+
+        return values;
     }
 
     //endregion
