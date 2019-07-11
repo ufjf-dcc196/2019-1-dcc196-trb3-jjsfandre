@@ -104,6 +104,13 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.update(HunterAppContract.Categoria.TABLE_NAME,values,selecao, args);
     }
 
+    public void inserirCategoria(Categoria c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueCategoria(c);
+
+        db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
+    }
+
     //endregion
 
     //region Content values

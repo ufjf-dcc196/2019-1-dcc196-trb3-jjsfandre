@@ -22,6 +22,7 @@ public class CategoriaActivity extends AppCompatActivity implements PopupMenu.On
 
     public CategoriaAdapter cAdapter;
     public static final int REQUEST_DETALHE_CATEGORIA = 300;
+    public static final int REQUEST_NOVO_CATEGORIA = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,12 @@ public class CategoriaActivity extends AppCompatActivity implements PopupMenu.On
                         cAdapter.setCursor(dbHelper.getCursorTodasAsCategorias());
                     }
                     break;
+                case REQUEST_NOVO_CATEGORIA:
+                    if (resultCode == Activity.RESULT_OK) {
+                        HunterAppDBHelper dbHelper = new HunterAppDBHelper(getApplicationContext());
+                        cAdapter.setCursor(dbHelper.getCursorTodasAsCategorias());
+                    }
+                    break;
                 default:
                     break;
             }
@@ -119,5 +126,8 @@ public class CategoriaActivity extends AppCompatActivity implements PopupMenu.On
 
     private void adicionarCategoria(){
 
+        Intent intent = new Intent(CategoriaActivity.this, CategoriaNovoActivity.class);
+
+        startActivityForResult(intent, REQUEST_NOVO_CATEGORIA);
     }
 }
