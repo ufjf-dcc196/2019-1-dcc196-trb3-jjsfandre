@@ -51,21 +51,30 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         Categoria c3 = new Categoria();
         c3.setTitulo("Categoria 3");
 
-        inserirCategoria(c1);
-        inserirCategoria(c2);
-        inserirCategoria(c3);
+        ContentValues values = populateContentValueCategoria(c1);
+        db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
+
+        values = populateContentValueCategoria(c2);
+        db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
+
+        values = populateContentValueCategoria(c3);
+        db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
     }
 
     private void addCandidatoData(SQLiteDatabase db){
 
         Candidato c1 = new Candidato("Candidato 1", "30/03/1994","3215-0101","perfil 1","mail1@mail.com");
-        Candidato c2 = new Candidato("Candidato 2", "30/03/1996","3215-0202","perfil 2","mail2@mail.com");
-        Candidato c3 = new Candidato("Candidato 3", "30/03/1998","3215-0303","perfil 3","mail3@mail.com");
+        ContentValues values = populateContentValueCandidato(c1);
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
 
-        inserirCandidato(c1);
-        inserirCandidato(c2);
-        inserirCandidato(c3);
-        
+        Candidato c2 = new Candidato("Candidato 2", "30/03/1996","3215-0202","perfil 2","mail2@mail.com");
+        values = populateContentValueCandidato(c2);
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
+
+        Candidato c3 = new Candidato("Candidato 3", "30/03/1998","3215-0303","perfil 3","mail3@mail.com");
+        values = populateContentValueCandidato(c3);
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
+
     }
 
     //endregion
@@ -130,7 +139,7 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     //endregion
 
     //region Candidato
-    public Cursor getCursorTodasAsCandidatos(){
+    public Cursor getCursorTodosOsCandidatos(){
         SQLiteDatabase db = this.getWritableDatabase();
         String sort = HunterAppContract.Candidato.COLUMN_NOME + " ASC";
         Cursor c = db.query(HunterAppContract.Candidato.TABLE_NAME, camposCandidato, null, null, null, null, sort);
