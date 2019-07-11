@@ -137,6 +137,74 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     //endregion
 
+    //region Candidato
+    public Cursor getCursorTodasAsCandidatos(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sort = HunterAppContract.Candidato.COLUMN_NOME + " ASC";
+        Cursor c = db.query(HunterAppContract.Candidato.TABLE_NAME, camposCandidato, null, null, null, null, sort);
+        return c;
+    }
+
+    public void deleteCandidatoById(String id, String titulo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String select = HunterAppContract.Candidato._ID+" = ?";
+
+        String[] selectArgs = {id};
+        db.delete(HunterAppContract.Candidato.TABLE_NAME,select,selectArgs);
+        Log.i("DBINFO", "DEL titulo: " + titulo);
+    }
+
+    public Candidato getCandidatoById(Long id) {
+        return getCandidatoById(id+"");
+    }
+
+    public Candidato getCandidatoById(String id){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selecao = HunterAppContract.Candidato._ID+ "= ?";
+        String[] args = {id};
+        Cursor c = db.query(HunterAppContract.Candidato.TABLE_NAME,camposCandidato,selecao,args,null,null,null);
+        int idxId = c.getColumnIndex(HunterAppContract.Candidato._ID);
+        int idxNome = c.getColumnIndex(HunterAppContract.Candidato.COLUMN_NOME);
+        int idxNascimento = c.getColumnIndex(HunterAppContract.Candidato.COLUMN_NASCIMENTO);
+        int idxTelefone = c.getColumnIndex(HunterAppContract.Candidato.COLUMN_TELEFONE);
+        int idxPerfil = c.getColumnIndex(HunterAppContract.Candidato.COLUMN_PERFIL);
+        int idxEmail = c.getColumnIndex(HunterAppContract.Candidato.COLUMN_EMAIL);
+
+        c.moveToFirst();
+        if (c.getCount()>0){
+
+            Long idCandidato = c.getLong(idxId);
+            String nome = c.getString(idxNome);
+            String nascimento = c.getString(idxNascimento);
+            String telefone = c.getString(idxTelefone);
+            String perfil = c.getString(idxPerfil);
+            String email = c.getString(idxEmail);
+
+            return new Candidato(idCandidato,nome,nascimento,telefone,perfil,email);
+        }
+        return null;
+    }
+
+    public void atualizarCandidato(Candidato c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueCandidato(c);
+
+        String selecao = HunterAppContract.Candidato._ID+ "= ?";
+        String[] args = {c.getId()+""};
+
+        db.update(HunterAppContract.Candidato.TABLE_NAME,values,selecao, args);
+    }
+
+    public void inserirCandidato(Candidato c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueCandidato(c);
+
+        db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
+    }
+
+    //endregion
+
     //region Content values
 
     private ContentValues populateContentValueCategoria(Categoria c){
@@ -165,6 +233,15 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     private final String[] camposCategoria = {
             HunterAppContract.Categoria._ID,
             HunterAppContract.Categoria.COLUMN_TITULO
+    };
+
+    private final String[] camposCandidato = {
+            HunterAppContract.Candidato._ID,
+            HunterAppContract.Candidato.COLUMN_NOME,
+            HunterAppContract.Candidato.COLUMN_NASCIMENTO,
+            HunterAppContract.Candidato.COLUMN_TELEFONE,
+            HunterAppContract.Candidato.COLUMN_PERFIL,
+            HunterAppContract.Candidato.COLUMN_EMAIL
     };
 
     //endregion
