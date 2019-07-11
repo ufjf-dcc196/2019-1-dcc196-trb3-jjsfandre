@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import br.ufjf.dcc196.hunterapp.DB.HunterAppContract;
+import br.ufjf.dcc196.hunterapp.Model.*;
 
 public class HunterAppDBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION=2;
@@ -35,6 +35,8 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //region Dados básicos
+
     private void addBaseData(SQLiteDatabase db){
         addCategoriaData(db);
     }
@@ -50,8 +52,9 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.insert(HunterAppContract.Categoria.TABLE_NAME,null,values);
     }
 
+    //endregion
 
-
+    //region Categoria
     public Cursor getCursorTodasAsCategorias(){
         SQLiteDatabase db = this.getWritableDatabase();
         String sort = HunterAppContract.Categoria.COLUMN_TITULO + " ASC";
@@ -68,9 +71,60 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         Log.i("DBINFO", "DEL titulo: " + titulo);
     }
 
+    public Categoria getCategoriaById(Long id) {
+        return getCategoriaById(id+"");
+    }
+
+    public Categoria getCategoriaById(String id){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selecao = HunterAppContract.Categoria._ID+ "= ?";
+        String[] args = {id};
+        Cursor c = db.query(HunterAppContract.Categoria.TABLE_NAME,camposCategoria,selecao,args,null,null,null);
+        int idxId = c.getColumnIndex(HunterAppContract.Categoria._ID);
+        int idxTitulo = c.getColumnIndex(HunterAppContract.Categoria.COLUMN_TITULO);
+        c.moveToFirst();
+        if (c.getCount()>0){
+
+            Long idCategoria = c.getLong(idxId);
+            String titulo = c.getString(idxTitulo);
+
+            return new Categoria(idCategoria,titulo);
+        }
+        return null;
+    }
+
+    public void atualizarCategoria(Categoria c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueCategoria(c);
+
+        String selecao = HunterAppContract.Categoria._ID+ "= ?";
+        String[] args = {c.getId()+""};
+
+        db.update(HunterAppContract.Categoria.TABLE_NAME,values,selecao, args);
+    }
+
+    //endregion
+
+    //region Content values
+
+    private ContentValues populateContentValueCategoria(Categoria c){
+
+        ContentValues values = new ContentValues();
+        values.put(HunterAppContract.Categoria.COLUMN_TITULO,c.getTitulo());
+
+        return values;
+
+    }
+
+    //endregion
+
+    //region Campos
     private final String[] camposCategoria = {
             HunterAppContract.Categoria._ID,
             HunterAppContract.Categoria.COLUMN_TITULO
     };
+
+    //endregion
 
 }

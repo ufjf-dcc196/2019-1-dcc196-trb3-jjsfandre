@@ -1,6 +1,8 @@
 package br.ufjf.dcc196.hunterapp.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -77,6 +79,23 @@ public class CategoriaActivity extends AppCompatActivity implements PopupMenu.On
                     cAdapter.notifyItemRemoved(position);
                 }
             };
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (data != null) {
+            switch (requestCode){
+                case REQUEST_DETALHE_CATEGORIA:
+                    if (resultCode == Activity.RESULT_OK) {
+                        HunterAppDBHelper dbHelper = new HunterAppDBHelper(getApplicationContext());
+                        cAdapter.setCursor(dbHelper.getCursorTodasAsCategorias());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     public void showMenuCategoria(View v){
         PopupMenu popup = new PopupMenu(this, v);
