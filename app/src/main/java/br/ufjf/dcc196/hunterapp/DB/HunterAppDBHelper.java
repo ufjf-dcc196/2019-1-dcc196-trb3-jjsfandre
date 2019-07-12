@@ -10,7 +10,9 @@ import android.util.Log;
 import br.ufjf.dcc196.hunterapp.Model.*;
 
 public class HunterAppDBHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION=3;
+    //region Padrao
+
+    public static final int DATABASE_VERSION=4;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -34,6 +36,8 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.execSQL(HunterAppContract.Atividade.DROP_TABLE);
         onCreate(db);
     }
+
+    //endregion
 
     //region Dados básicos
 
@@ -80,15 +84,15 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     private void addProducaoData(SQLiteDatabase db){
 
-        Long categoriaId = getPrimeiraCategoriaId();
-        Long candidatoId = getPrimeiroCandidatoId();
+        Long categoriaId = getPrimeiraCategoriaId(db);
+        Long candidatoId = getPrimeiroCandidatoId(db);
         Producao p1 = new Producao("Producao 1", "Descrição 1", "20/04/2019", "10/05/2019",categoriaId,candidatoId);
         Producao p2 = new Producao("Producao 2", "Descrição 2", "20/05/2019", "10/06/2019",categoriaId,candidatoId);
         Producao p3 = new Producao("Producao 3", "Descrição 3", "20/06/2019", "10/07/2019",categoriaId,candidatoId);
 
         ContentValues values = populateContentValueProducao(p1);
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
-        
+
         values = populateContentValueProducao(p2);
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
 
@@ -96,8 +100,8 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
     }
 
-    private Long getPrimeiraCategoriaId(){
-        Cursor c = getCursorTodasAsCategorias();
+    private Long getPrimeiraCategoriaId(SQLiteDatabase db){
+        Cursor c = getCursorTodasAsCategorias(db);
 
         int idxId = c.getColumnIndex(HunterAppContract.Categoria._ID);
         c.moveToFirst();
@@ -107,8 +111,8 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
-    private Long getPrimeiroCandidatoId(){
-        Cursor c = getCursorTodosOsCandidatos();
+    private Long getPrimeiroCandidatoId(SQLiteDatabase db){
+        Cursor c = getCursorTodosOsCandidatos(db);
 
         int idxId = c.getColumnIndex(HunterAppContract.Candidato._ID);
         c.moveToFirst();
@@ -123,7 +127,12 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     //region Categoria
     public Cursor getCursorTodasAsCategorias(){
+
         SQLiteDatabase db = this.getWritableDatabase();
+        return getCursorTodasAsCategorias(db);
+    }
+
+    public Cursor getCursorTodasAsCategorias(SQLiteDatabase db){
         String sort = HunterAppContract.Categoria.COLUMN_TITULO + " ASC";
         Cursor c = db.query(HunterAppContract.Categoria.TABLE_NAME, camposCategoria, null, null, null, null, sort);
         return c;
@@ -183,6 +192,11 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     //region Candidato
     public Cursor getCursorTodosOsCandidatos(){
         SQLiteDatabase db = this.getWritableDatabase();
+        return getCursorTodosOsCandidatos(db);
+
+    }
+    public Cursor getCursorTodosOsCandidatos(SQLiteDatabase db){
+
         String sort = HunterAppContract.Candidato.COLUMN_NOME + " ASC";
         Cursor c = db.query(HunterAppContract.Candidato.TABLE_NAME, camposCandidato, null, null, null, null, sort);
         return c;
@@ -244,6 +258,77 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         ContentValues values = populateContentValueCandidato(c);
 
         db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
+    }
+
+    //endregion
+
+
+    //region Producao
+    public Cursor getCursorTodasAsProducoes(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sort = HunterAppContract.Producao.COLUMN_TITULO + " ASC";
+        Cursor c = db.query(HunterAppContract.Producao.TABLE_NAME, camposProducao, null, null, null, null, sort);
+        return c;
+    }
+
+    public void deleteProducaoById(String id, String titulo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String select = HunterAppContract.Producao._ID+" = ?";
+
+        String[] selectArgs = {id};
+        db.delete(HunterAppContract.Producao.TABLE_NAME,select,selectArgs);
+        Log.i("DBINFO", "DEL titulo: " + titulo);
+    }
+
+    public Producao getProducaoById(Long id) {
+        return getProducaoById(id+"");
+    }
+
+    public Producao getProducaoById(String id){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selecao = HunterAppContract.Producao._ID+ "= ?";
+        String[] args = {id};
+        Cursor c = db.query(HunterAppContract.Producao.TABLE_NAME,camposProducao,selecao,args,null,null,null);
+        int idxId = c.getColumnIndex(HunterAppContract.Producao._ID);
+        int idxTitulo = c.getColumnIndex(HunterAppContract.Producao.COLUMN_TITULO);
+        int idxDescricao = c.getColumnIndex(HunterAppContract.Producao.COLUMN_DESCRICAO);
+        int idxInicio = c.getColumnIndex(HunterAppContract.Producao.COLUMN_INICIO);
+        int idxFim = c.getColumnIndex(HunterAppContract.Producao.COLUMN_FIM);
+        int idxCategoria = c.getColumnIndex(HunterAppContract.Producao.COLUMN_CATEGORIA);
+        int idxCandidato = c.getColumnIndex(HunterAppContract.Producao.COLUMN_CANDIDATO);
+
+        c.moveToFirst();
+        if (c.getCount()>0){
+
+            Long idProducao = c.getLong(idxId);
+            String titulo = c.getString(idxTitulo);
+            String descricao = c.getString(idxDescricao);
+            String inicio = c.getString(idxInicio);
+            String fim = c.getString(idxFim);
+            Long categoria = c.getLong(idxCategoria);
+            Long candidato = c.getLong(idxCandidato);
+
+            return new Producao(idProducao,titulo,descricao,inicio,fim,categoria,candidato);
+        }
+        return null;
+    }
+
+    public void atualizarProducao(Producao c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueProducao(c);
+
+        String selecao = HunterAppContract.Producao._ID+ "= ?";
+        String[] args = {c.getId()+""};
+
+        db.update(HunterAppContract.Producao.TABLE_NAME,values,selecao, args);
+    }
+
+    public void inserirProducao(Producao c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueProducao(c);
+
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
     }
 
     //endregion
