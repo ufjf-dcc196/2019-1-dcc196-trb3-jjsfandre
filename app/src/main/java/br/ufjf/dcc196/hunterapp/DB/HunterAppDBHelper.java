@@ -40,6 +40,7 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     private void addBaseData(SQLiteDatabase db){
         addCategoriaData(db);
         addCandidatoData(db);
+        addProducaoData(db);
     }
 
     private void addCategoriaData(SQLiteDatabase db){
@@ -75,6 +76,47 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         values = populateContentValueCandidato(c3);
         db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
 
+    }
+
+    private void addProducaoData(SQLiteDatabase db){
+
+        Long categoriaId = getPrimeiraCategoriaId();
+        Long candidatoId = getPrimeiroCandidatoId();
+        Producao p1 = new Producao("Producao 1", "Descrição 1", "20/04/2019", "10/05/2019",categoriaId,candidatoId);
+        Producao p2 = new Producao("Producao 2", "Descrição 2", "20/05/2019", "10/06/2019",categoriaId,candidatoId);
+        Producao p3 = new Producao("Producao 3", "Descrição 3", "20/06/2019", "10/07/2019",categoriaId,candidatoId);
+
+        ContentValues values = populateContentValueProducao(p1);
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
+        
+        values = populateContentValueProducao(p2);
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
+
+        values = populateContentValueProducao(p3);
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
+    }
+
+    private Long getPrimeiraCategoriaId(){
+        Cursor c = getCursorTodasAsCategorias();
+
+        int idxId = c.getColumnIndex(HunterAppContract.Categoria._ID);
+        c.moveToFirst();
+        if (c.getCount()>0) {
+            Long idCategoria = c.getLong(idxId);
+            return idCategoria;
+        }
+        return null;
+    }
+    private Long getPrimeiroCandidatoId(){
+        Cursor c = getCursorTodosOsCandidatos();
+
+        int idxId = c.getColumnIndex(HunterAppContract.Candidato._ID);
+        c.moveToFirst();
+        if (c.getCount()>0) {
+            Long idCandidato = c.getLong(idxId);
+            return idCandidato;
+        }
+        return null;
     }
 
     //endregion
@@ -227,6 +269,17 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
         return values;
     }
+    private ContentValues populateContentValueProducao(Producao p){
+        ContentValues values = new ContentValues();
+        values.put(HunterAppContract.Producao.COLUMN_TITULO,p.getTitulo());
+        values.put(HunterAppContract.Producao.COLUMN_DESCRICAO,p.getDescricao());
+        values.put(HunterAppContract.Producao.COLUMN_INICIO,p.getInicio());
+        values.put(HunterAppContract.Producao.COLUMN_FIM,p.getFim());
+        values.put(HunterAppContract.Producao.COLUMN_CATEGORIA,p.getCategoriaId());
+        values.put(HunterAppContract.Producao.COLUMN_CANDIDATO,p.getCandidatoId());
+
+        return values;
+    }
 
     //endregion
 
@@ -243,6 +296,15 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
             HunterAppContract.Candidato.COLUMN_TELEFONE,
             HunterAppContract.Candidato.COLUMN_PERFIL,
             HunterAppContract.Candidato.COLUMN_EMAIL
+    };
+    private final String[] camposProducao = {
+            HunterAppContract.Producao._ID,
+            HunterAppContract.Producao.COLUMN_TITULO,
+            HunterAppContract.Producao.COLUMN_DESCRICAO,
+            HunterAppContract.Producao.COLUMN_INICIO,
+            HunterAppContract.Producao.COLUMN_FIM,
+            HunterAppContract.Producao.COLUMN_CATEGORIA,
+            HunterAppContract.Producao.COLUMN_CANDIDATO
     };
 
     //endregion
