@@ -23,6 +23,14 @@ public class Producao {
         this.categoriaId = categoriaId;
         this.candidatoId = candidatoId;
     }
+    public Producao( String titulo, String descricao, String inicio, String fim, Long categoriaId, Long candidatoId) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.inicio = inicio;
+        this.fim = fim;
+        this.categoriaId = categoriaId;
+        this.candidatoId = candidatoId;
+    }
 
     public Long getId() {
         return id;
