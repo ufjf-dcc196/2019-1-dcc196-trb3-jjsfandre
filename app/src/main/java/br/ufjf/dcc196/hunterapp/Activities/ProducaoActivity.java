@@ -32,6 +32,8 @@ public class ProducaoActivity extends AppCompatActivity implements PopupMenu.OnM
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_producao);
 
+        idCandidato = getIntent().getLongExtra("idCandidato",0);
+
         Switch switch1 = (Switch)findViewById(R.id.switchExcluirProducao);
 
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -47,7 +49,7 @@ public class ProducaoActivity extends AppCompatActivity implements PopupMenu.OnM
         final RecyclerView rv = findViewById(R.id.rvProducoes);
         HunterAppDBHelper dbHelper = new HunterAppDBHelper(getApplicationContext());
 
-        cAdapter = new ProducaoAdapter(dbHelper.getCursorTodasAsProducoes(),getApplicationContext());
+        cAdapter = new ProducaoAdapter(dbHelper.getCursorTodasAsProducoesByCandidatoId(idCandidato),getApplicationContext());
         cAdapter.setOnItemClickListener(listenerEditProducao);
         rv.setAdapter(cAdapter);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -79,7 +81,7 @@ public class ProducaoActivity extends AppCompatActivity implements PopupMenu.OnM
                     TextView txtTitulo = (TextView) itemView.findViewById(R.id.txtTituloProducao);
                     dbHelper.deleteProducaoById(txtId.getText().toString(), txtTitulo.getText().toString());
 
-                    cAdapter.setCursor(dbHelper.getCursorTodasAsProducoes());
+                    cAdapter.setCursor(dbHelper.getCursorTodasAsProducoesByCandidatoId(idCandidato));
                     cAdapter.notifyItemRemoved(position);
                 }
             };
@@ -92,13 +94,13 @@ public class ProducaoActivity extends AppCompatActivity implements PopupMenu.OnM
                 case REQUEST_DETALHE_PRODUCAO:
                     if (resultCode == Activity.RESULT_OK) {
                         HunterAppDBHelper dbHelper = new HunterAppDBHelper(getApplicationContext());
-                        cAdapter.setCursor(dbHelper.getCursorTodasAsProducoes());
+                        cAdapter.setCursor(dbHelper.getCursorTodasAsProducoesByCandidatoId(idCandidato));
                     }
                     break;
                 case REQUEST_NOVO_PRODUCAO:
                     if (resultCode == Activity.RESULT_OK) {
                         HunterAppDBHelper dbHelper = new HunterAppDBHelper(getApplicationContext());
-                        cAdapter.setCursor(dbHelper.getCursorTodasAsProducoes());
+                        cAdapter.setCursor(dbHelper.getCursorTodasAsProducoesByCandidatoId(idCandidato));
                     }
                     break;
                 default:

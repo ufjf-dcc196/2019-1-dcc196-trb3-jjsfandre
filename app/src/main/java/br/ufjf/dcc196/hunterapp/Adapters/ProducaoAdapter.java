@@ -47,7 +47,7 @@ public class ProducaoAdapter extends RecyclerView.Adapter<ProducaoAdapter.ViewHo
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View linha = inflater.inflate(R.layout.candidato_layout,parent,false);
+        View linha = inflater.inflate(R.layout.producao_layout,parent,false);
         ViewHolder vh = new ViewHolder(linha);
         return vh;
     }
@@ -55,8 +55,8 @@ public class ProducaoAdapter extends RecyclerView.Adapter<ProducaoAdapter.ViewHo
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        int idxId = cursor.getColumnIndexOrThrow(HunterAppContract.Candidato._ID);
-        int idxNome= cursor.getColumnIndexOrThrow(HunterAppContract.Candidato.COLUMN_NOME);
+        int idxId = cursor.getColumnIndexOrThrow(HunterAppContract.Producao._ID);
+        int idxNome= cursor.getColumnIndexOrThrow(HunterAppContract.Producao.COLUMN_TITULO);
         cursor.moveToPosition(i);
         viewHolder.txtId.setText(cursor.getLong(idxId)+"");
 
@@ -74,8 +74,8 @@ public class ProducaoAdapter extends RecyclerView.Adapter<ProducaoAdapter.ViewHo
 
         public ViewHolder(final View itemView){
             super(itemView);
-            txtTitulo = itemView.findViewById(R.id.txtNomeCandidato);
-            txtId = itemView.findViewById(R.id.txtIdCandidato);
+            txtTitulo = itemView.findViewById(R.id.txtTituloProducao);
+            txtId = itemView.findViewById(R.id.txtIdProducao);
 
             itemView.setOnClickListener(new View.OnClickListener(){
 

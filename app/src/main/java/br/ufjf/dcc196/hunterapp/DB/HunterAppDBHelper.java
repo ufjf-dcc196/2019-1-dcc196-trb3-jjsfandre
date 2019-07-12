@@ -264,10 +264,18 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
 
     //region Producao
-    public Cursor getCursorTodasAsProducoes(){
+    public Cursor getCursorTodasAsProducoesByCandidatoId(Long candidatoId){
+        return getCursorTodasAsProducoesByCandidatoId(""+candidatoId);
+    }
+
+    public Cursor getCursorTodasAsProducoesByCandidatoId(String candidatoId){
         SQLiteDatabase db = this.getWritableDatabase();
         String sort = HunterAppContract.Producao.COLUMN_TITULO + " ASC";
-        Cursor c = db.query(HunterAppContract.Producao.TABLE_NAME, camposProducao, null, null, null, null, sort);
+        String select = HunterAppContract.Producao.COLUMN_CATEGORIA+" = ?";
+
+        String[] selectArgs = {candidatoId};
+
+        Cursor c = db.query(HunterAppContract.Producao.TABLE_NAME, camposProducao, select, selectArgs, null, null, sort);
         return c;
     }
 

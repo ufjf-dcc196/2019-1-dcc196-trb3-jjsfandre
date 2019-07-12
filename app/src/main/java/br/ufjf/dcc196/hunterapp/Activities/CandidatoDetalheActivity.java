@@ -19,6 +19,9 @@ public class CandidatoDetalheActivity extends AppCompatActivity {
     private EditText perfil;
     private EditText email;
     public Candidato candidato;
+    public Long idCandidato;
+
+    public static final int REQUEST_LISTAR_PRODUCAO = 700;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +35,8 @@ public class CandidatoDetalheActivity extends AppCompatActivity {
         perfil = findViewById(R.id.editPerfilCandidatoDetalhe);
         email = findViewById(R.id.editEmailCandidatoDetalhe);
 
-        String id = getIntent().getStringExtra("idCandidato");
-        candidato = dbHelper.getCandidatoById(id);
+        idCandidato = Long.parseLong(getIntent().getStringExtra("idCandidato"));
+        candidato = dbHelper.getCandidatoById(idCandidato);
 
         nome.setText(candidato.getNome());
         nascimento.setText(candidato.getNascimento());
@@ -58,6 +61,19 @@ public class CandidatoDetalheActivity extends AppCompatActivity {
                 Intent resultado = new Intent();
                 setResult(RESULT_OK, resultado);
                 finish();
+            }
+        });
+
+        Button btnListarProducaoPorCandidato = findViewById(R.id.btnListarProducaoPorCandidato);
+
+        btnListarProducaoPorCandidato.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(CandidatoDetalheActivity.this, ProducaoActivity.class);
+                intent.putExtra("idCandidato", idCandidato);
+
+                startActivityForResult(intent, REQUEST_LISTAR_PRODUCAO);
             }
         });
     }
