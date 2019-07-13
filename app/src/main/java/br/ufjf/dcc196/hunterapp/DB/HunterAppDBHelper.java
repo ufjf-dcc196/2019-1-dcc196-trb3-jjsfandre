@@ -15,7 +15,7 @@ import br.ufjf.dcc196.hunterapp.Model.*;
 public class HunterAppDBHelper extends SQLiteOpenHelper {
     //region Padrao
 
-    public static final int DATABASE_VERSION=5;
+    public static final int DATABASE_VERSION=6;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -103,6 +103,23 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
     }
 
+    private void addAtividadeData(SQLiteDatabase db){
+        Long producaoId = getPrimeiraProducaoId(db,getPrimeiraCategoriaId(db));
+        Atividade a1 = new Atividade("Atividade 1", "10/04/2019",100.0,producaoId);
+        Atividade a2 = new Atividade("Atividade 2", "10/05/2019",200.0,producaoId);
+        Atividade a3 = new Atividade("Atividade 3", "10/06/2019",250.0,producaoId);
+
+
+        ContentValues values = populateContentValueAtividade(a1);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a2);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a3);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+    }
+
     private Long getPrimeiraCategoriaId(SQLiteDatabase db){
         Cursor c = getCursorTodasAsCategorias(db);
 
@@ -122,6 +139,19 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         if (c.getCount()>0) {
             Long idCandidato = c.getLong(idxId);
             return idCandidato;
+        }
+        return null;
+    }
+
+
+    private Long getPrimeiraProducaoId(SQLiteDatabase db, Long candidatoId){
+        Cursor c = getCursorTodasAsProducoesByCandidatoId(candidatoId);
+
+        int idxId = c.getColumnIndex(HunterAppContract.Producao._ID);
+        c.moveToFirst();
+        if (c.getCount()>0) {
+            Long idProducao = c.getLong(idxId);
+            return idProducao;
         }
         return null;
     }
@@ -281,7 +311,6 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     //endregion
 
-
     //region Producao
     public Cursor getCursorTodasAsProducoesByCandidatoId(Long candidatoId){
         return getCursorTodasAsProducoesByCandidatoId(""+candidatoId);
@@ -360,6 +389,81 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     //endregion
 
+    //region Atividade
+    public Cursor getCursorTodasAsAtividadesByProducaoId(Long producaoId){
+        return getCursorTodasAsAtividadesByProducaoId(""+producaoId);
+    }
+
+    public Cursor getCursorTodasAsAtividadesByProducaoId(String producaoId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sort = HunterAppContract.Atividade.COLUMN_DESCRICAO + " ASC";
+        String select = HunterAppContract.Atividade.COLUMN_PRODUCAO+" = ?";
+
+        String[] selectArgs = {producaoId};
+
+        Cursor c = db.query(HunterAppContract.Atividade.TABLE_NAME, camposAtividade, select, selectArgs, null, null, sort);
+        return c;
+    }
+
+    public void deleteAtividadeById(String id, String titulo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String select = HunterAppContract.Atividade._ID+" = ?";
+
+        String[] selectArgs = {id};
+        db.delete(HunterAppContract.Atividade.TABLE_NAME,select,selectArgs);
+        Log.i("DBINFO", "DEL titulo: " + titulo);
+    }
+
+    public Atividade getAtividadeById(Long id) {
+        return getAtividadeById(id+"");
+    }
+
+    public Atividade getAtividadeById(String id){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selecao = HunterAppContract.Atividade._ID+ "= ?";
+        String[] args = {id};
+        Cursor c = db.query(HunterAppContract.Atividade.TABLE_NAME,camposAtividade,selecao,args,null,null,null);
+        int idxId = c.getColumnIndex(HunterAppContract.Atividade._ID);
+        int idxDescricao = c.getColumnIndex(HunterAppContract.Atividade.COLUMN_DESCRICAO);
+        int idxData = c.getColumnIndex(HunterAppContract.Atividade.COLUMN_DATA);
+        int idxHoras = c.getColumnIndex(HunterAppContract.Atividade.COLUMN_HORAS);
+        int idxProducao = c.getColumnIndex(HunterAppContract.Atividade.COLUMN_PRODUCAO);
+
+
+        c.moveToFirst();
+        if (c.getCount()>0){
+
+            Long idAtividade = c.getLong(idxId);
+            String descricao = c.getString(idxDescricao);
+            String data = c.getString(idxData);
+            Double horas = c.getDouble(idxHoras);
+            Long producao = c.getLong(idxProducao);
+
+            return new Atividade(idAtividade,descricao,data,horas,producao);
+        }
+        return null;
+    }
+
+    public void atualizarAtividade(Atividade c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueAtividade(c);
+
+        String selecao = HunterAppContract.Atividade._ID+ "= ?";
+        String[] args = {c.getId()+""};
+
+        db.update(HunterAppContract.Atividade.TABLE_NAME,values,selecao, args);
+    }
+
+    public void inserirAtividade(Atividade c){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = populateContentValueAtividade(c);
+
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+    }
+
+    //endregion
+
     //region Content values
 
     private ContentValues populateContentValueCategoria(Categoria c){
@@ -392,6 +496,15 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
         return values;
     }
+    private ContentValues populateContentValueAtividade(Atividade a){
+        ContentValues values = new ContentValues();
+        values.put(HunterAppContract.Atividade.COLUMN_DESCRICAO,a.getDescricao());
+        values.put(HunterAppContract.Atividade.COLUMN_DATA,a.getData());
+        values.put(HunterAppContract.Atividade.COLUMN_HORAS,a.getHoras());
+        values.put(HunterAppContract.Atividade.COLUMN_PRODUCAO,a.getProducaoId());
+
+        return values;
+    }
 
     //endregion
 
@@ -417,6 +530,14 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
             HunterAppContract.Producao.COLUMN_FIM,
             HunterAppContract.Producao.COLUMN_CATEGORIA,
             HunterAppContract.Producao.COLUMN_CANDIDATO
+    };
+
+    private final String[] camposAtividade = {
+            HunterAppContract.Atividade._ID,
+            HunterAppContract.Atividade.COLUMN_DESCRICAO,
+            HunterAppContract.Atividade.COLUMN_DATA,
+            HunterAppContract.Atividade.COLUMN_HORAS,
+            HunterAppContract.Atividade.COLUMN_PRODUCAO
     };
 
     //endregion

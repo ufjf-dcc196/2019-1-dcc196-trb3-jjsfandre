@@ -56,7 +56,7 @@ public final class HunterAppContract {
         public static final String COLUMN_PRODUCAO = "producaoId";
 
         public static final String CREATE_TABLE = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "%s TEXT, %s TEXT, %s TEXT, %s INTEGER)",TABLE_NAME, _ID, COLUMN_DESCRICAO,
+                        "%s TEXT, %s TEXT, %s REAL, %s INTEGER)",TABLE_NAME, _ID, COLUMN_DESCRICAO,
                 COLUMN_DATA,COLUMN_HORAS,COLUMN_PRODUCAO);
         public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
 
