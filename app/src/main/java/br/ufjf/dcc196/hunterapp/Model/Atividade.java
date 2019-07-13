@@ -5,7 +5,7 @@ public class Atividade {
     private Long id;
     private String descricao;
     private String data;
-    private String horas;
+    private Double horas;
 
     private Long producaoId;
 
@@ -13,8 +13,14 @@ public class Atividade {
     public Atividade() {
     }
 
-    public Atividade(Long id, String descricao, String data, String horas, Long producaoId) {
+    public Atividade(Long id, String descricao, String data, Double horas, Long producaoId) {
         this.id = id;
+        this.descricao = descricao;
+        this.data = data;
+        this.horas = horas;
+        this.producaoId = producaoId;
+    }
+    public Atividade( String descricao, String data, Double horas, Long producaoId) {
         this.descricao = descricao;
         this.data = data;
         this.horas = horas;
@@ -45,11 +51,11 @@ public class Atividade {
         this.data = data;
     }
 
-    public String getHoras() {
+    public Double getHoras() {
         return horas;
     }
 
-    public void setHoras(String horas) {
+    public void setHoras(Double horas) {
         this.horas = horas;
     }
 
