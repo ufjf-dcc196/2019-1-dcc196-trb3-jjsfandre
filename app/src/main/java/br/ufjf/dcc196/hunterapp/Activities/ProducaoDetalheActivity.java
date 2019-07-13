@@ -18,12 +18,15 @@ import br.ufjf.dcc196.hunterapp.Model.*;
 
 public class ProducaoDetalheActivity extends AppCompatActivity {
 
+    public static final int REQUEST_LISTAR_ATIVIDADES = 800;
+
     private EditText titulo;
     private EditText descricao;
     private EditText inicio;
     private EditText fim;
     public Spinner categoria;
     public Long idCandidato;
+    public Long idProducao;
 
     final List<String> listaCategoriasNomes = new ArrayList<>();
     final List<Long> listaCategoriasIds = new ArrayList<>();
@@ -43,7 +46,7 @@ public class ProducaoDetalheActivity extends AppCompatActivity {
 
         idCandidato = getIntent().getLongExtra("idCandidato",0);
         HunterAppDBHelper dbHelper = new HunterAppDBHelper(getApplicationContext());
-        Long idProducao = getIntent().getLongExtra("idProducao",0);
+        idProducao = getIntent().getLongExtra("idProducao",0);
         List<Categoria> listaCategorias = dbHelper.getTodasAsCategoriasList();
 
 
@@ -85,6 +88,19 @@ public class ProducaoDetalheActivity extends AppCompatActivity {
 
                 setResult(RESULT_OK, resultado);
                 finish();
+            }
+        });
+
+        Button btnListarAtividadePorProducao = findViewById(R.id.btnListarAtividadePorProducao);
+
+        btnListarAtividadePorProducao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(ProducaoDetalheActivity.this, AtividadeActivity.class);
+                intent.putExtra("idProducao", idProducao);
+
+                startActivityForResult(intent, REQUEST_LISTAR_ATIVIDADES);
             }
         });
     }

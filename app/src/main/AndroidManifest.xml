@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ProducaoDetalheActivity"></activity>
+        <activity android:name=".Activities.AtividadeDetalheActivity"></activity>
+        <activity android:name=".Activities.AtividadeNovoActivity" />
+        <activity android:name=".Activities.AtividadeActivity" />
+        <activity android:name=".Activities.ProducaoDetalheActivity" />
         <activity android:name=".Activities.ProducaoNovoActivity" />
         <activity android:name=".Activities.ProducaoActivity" />
         <activity android:name=".Activities.CandidatoDetalheActivity" />
