@@ -15,7 +15,7 @@ import br.ufjf.dcc196.hunterapp.Model.*;
 public class HunterAppDBHelper extends SQLiteOpenHelper {
     //region Padrao
 
-    public static final int DATABASE_VERSION=6;
+    public static final int DATABASE_VERSION=7;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -48,6 +48,7 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         addCategoriaData(db);
         addCandidatoData(db);
         addProducaoData(db);
+        addAtividadeData(db);
     }
 
     private void addCategoriaData(SQLiteDatabase db){
@@ -145,7 +146,7 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
 
     private Long getPrimeiraProducaoId(SQLiteDatabase db, Long candidatoId){
-        Cursor c = getCursorTodasAsProducoesByCandidatoId(candidatoId);
+        Cursor c = getCursorTodasAsProducoesByCandidatoId(db,candidatoId);
 
         int idxId = c.getColumnIndex(HunterAppContract.Producao._ID);
         c.moveToFirst();
@@ -312,12 +313,22 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     //endregion
 
     //region Producao
-    public Cursor getCursorTodasAsProducoesByCandidatoId(Long candidatoId){
-        return getCursorTodasAsProducoesByCandidatoId(""+candidatoId);
-    }
 
+
+    public Cursor getCursorTodasAsProducoesByCandidatoId(Long candidatoId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return getCursorTodasAsProducoesByCandidatoId(db,candidatoId);
+    }
     public Cursor getCursorTodasAsProducoesByCandidatoId(String candidatoId){
         SQLiteDatabase db = this.getWritableDatabase();
+        return getCursorTodasAsProducoesByCandidatoId(db,candidatoId);
+    }
+
+    public Cursor getCursorTodasAsProducoesByCandidatoId(SQLiteDatabase db,Long candidatoId){
+        return getCursorTodasAsProducoesByCandidatoId(db,""+candidatoId);
+    }
+
+    public Cursor getCursorTodasAsProducoesByCandidatoId(SQLiteDatabase db,String candidatoId){
         String sort = HunterAppContract.Producao.COLUMN_TITULO + " ASC";
         String select = HunterAppContract.Producao.COLUMN_CANDIDATO+" = ?";
 
