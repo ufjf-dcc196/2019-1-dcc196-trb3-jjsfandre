@@ -65,7 +65,7 @@ public class ProducaoActivity extends AppCompatActivity implements PopupMenu.OnM
                     TextView txtId = (TextView) itemView.findViewById(R.id.txtIdProducao);
 
                     Intent intent = new Intent(ProducaoActivity.this, ProducaoDetalheActivity.class);
-                    intent.putExtra("idProducao", txtId.getText().toString());
+                    intent.putExtra("idProducao", Long.parseLong(txtId.getText().toString()));
 
                     startActivityForResult(intent, REQUEST_DETALHE_PRODUCAO);
                 }
@@ -132,7 +132,7 @@ public class ProducaoActivity extends AppCompatActivity implements PopupMenu.OnM
     private void adicionarProducao(){
 
         Intent intent = new Intent(ProducaoActivity.this, ProducaoNovoActivity.class);
-
+        intent.putExtra("idCandidato", idCandidato);
         startActivityForResult(intent, REQUEST_NOVO_PRODUCAO);
     }
 }

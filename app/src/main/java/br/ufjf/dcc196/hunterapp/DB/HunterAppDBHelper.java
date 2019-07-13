@@ -7,12 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.ufjf.dcc196.hunterapp.Model.*;
 
 public class HunterAppDBHelper extends SQLiteOpenHelper {
     //region Padrao
 
-    public static final int DATABASE_VERSION=4;
+    public static final int DATABASE_VERSION=5;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -136,6 +139,22 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         String sort = HunterAppContract.Categoria.COLUMN_TITULO + " ASC";
         Cursor c = db.query(HunterAppContract.Categoria.TABLE_NAME, camposCategoria, null, null, null, null, sort);
         return c;
+    }
+
+    public List<Categoria> getTodasAsCategoriasList(){
+        Cursor c = getCursorTodasAsCategorias();
+        List<Categoria> result = new ArrayList<>();
+
+        c.move(-1);
+
+        int idxTag = c.getColumnIndex(HunterAppContract.Categoria._ID);
+        int idxTitulo = c.getColumnIndex(HunterAppContract.Categoria.COLUMN_TITULO);
+        while(c.moveToNext()){
+            Long id = c.getLong(idxTag);
+            String titulo = c.getString(idxTitulo);
+            result.add(new Categoria(id,titulo));
+        }
+        return result;
     }
 
     public void deleteCategoriaById(String id, String titulo){
@@ -271,7 +290,7 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     public Cursor getCursorTodasAsProducoesByCandidatoId(String candidatoId){
         SQLiteDatabase db = this.getWritableDatabase();
         String sort = HunterAppContract.Producao.COLUMN_TITULO + " ASC";
-        String select = HunterAppContract.Producao.COLUMN_CATEGORIA+" = ?";
+        String select = HunterAppContract.Producao.COLUMN_CANDIDATO+" = ?";
 
         String[] selectArgs = {candidatoId};
 

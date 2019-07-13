@@ -129,6 +129,29 @@
 
         </TableRow>
 
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txtCategoriaProducaoNovo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:padding="5dp"
+                android:text="Categoria:" />
+
+
+
+            <Spinner
+                android:id="@+id/editCategoriaProducaoNovo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </TableRow>
+
         <TableRow
             android:layout_width="match_parent"
             android:gravity="center"
