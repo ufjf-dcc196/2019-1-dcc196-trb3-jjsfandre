@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:ems="10"
-                android:inputType="text"
+                android:inputType="date"
                 android:padding="5dp" />
 
         </TableRow>
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:ems="10"
-                android:inputType="text"
+                android:inputType="number"
                 android:padding="5dp" />
 
         </TableRow>

@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
                 android:padding="5dp"
-                android:text="Descrição:" />
+                android:text="Data:" />
 
             <EditText
                 android:id="@+id/editDataAtividadeDetalhe"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:ems="10"
-                android:inputType="text"
+                android:inputType="date"
                 android:padding="5dp" />
 
         </TableRow>
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
                 android:padding="5dp"
-                android:text="Descrição:" />
+                android:text="Horas:" />
 
             <EditText
                 android:id="@+id/editHorasAtividadeDetalhe"
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:ems="10"
-                android:inputType="text"
+                android:inputType="number"
                 android:padding="5dp" />
 
         </TableRow>
