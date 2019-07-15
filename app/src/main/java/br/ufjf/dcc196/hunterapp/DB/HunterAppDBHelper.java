@@ -15,7 +15,7 @@ import br.ufjf.dcc196.hunterapp.Model.*;
 public class HunterAppDBHelper extends SQLiteOpenHelper {
     //region Padrao
 
-    public static final int DATABASE_VERSION=7;
+    public static final int DATABASE_VERSION=10;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -88,11 +88,13 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
     private void addProducaoData(SQLiteDatabase db){
 
-        Long categoriaId = getPrimeiraCategoriaId(db);
-        Long candidatoId = getPrimeiroCandidatoId(db);
+        Long categoriaId = getCategoriaIdByOrder(db);
+        Long candidatoId = getCandidatoIdByOrder(db);
+        Long candidatoId2 = getCandidatoIdByOrder(db,1);
         Producao p1 = new Producao("Producao 1", "Descrição 1", "20/04/2019", "10/05/2019",categoriaId,candidatoId);
         Producao p2 = new Producao("Producao 2", "Descrição 2", "20/05/2019", "10/06/2019",categoriaId,candidatoId);
         Producao p3 = new Producao("Producao 3", "Descrição 3", "20/06/2019", "10/07/2019",categoriaId,candidatoId);
+        Producao p4 = new Producao("Producao 4", "Descrição 4", "20/07/2019", "10/08/2019",categoriaId,candidatoId2);
 
         ContentValues values = populateContentValueProducao(p1);
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
@@ -102,13 +104,19 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
         values = populateContentValueProducao(p3);
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
+
+        values = populateContentValueProducao(p4);
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
     }
 
     private void addAtividadeData(SQLiteDatabase db){
-        Long producaoId = getPrimeiraProducaoId(db,getPrimeiraCategoriaId(db));
+        Long producaoId = getProducaoIdByOrder(db, getCandidatoIdByOrder(db));
+        Long producaoId2 = getProducaoIdByOrder(db, getCandidatoIdByOrder(db,1));
         Atividade a1 = new Atividade("Atividade 1", "10/04/2019",100.0,producaoId);
         Atividade a2 = new Atividade("Atividade 2", "10/05/2019",200.0,producaoId);
         Atividade a3 = new Atividade("Atividade 3", "10/06/2019",250.0,producaoId);
+        Atividade a4 = new Atividade("Atividade 4", "10/07/2019",50.0,producaoId2);
+        Atividade a5 = new Atividade("Atividade 5", "10/08/2019",50.0,producaoId2);
 
 
         ContentValues values = populateContentValueAtividade(a1);
@@ -119,24 +127,36 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
         values = populateContentValueAtividade(a3);
         db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a4);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a5);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
     }
 
-    private Long getPrimeiraCategoriaId(SQLiteDatabase db){
+    private Long getCategoriaIdByOrder(SQLiteDatabase db){
+        return getCategoriaIdByOrder(db,0);
+    }
+    private Long getCategoriaIdByOrder(SQLiteDatabase db, int order){
         Cursor c = getCursorTodasAsCategorias(db);
 
         int idxId = c.getColumnIndex(HunterAppContract.Categoria._ID);
-        c.moveToFirst();
+        c.moveToPosition(order);
         if (c.getCount()>0) {
             Long idCategoria = c.getLong(idxId);
             return idCategoria;
         }
         return null;
     }
-    private Long getPrimeiroCandidatoId(SQLiteDatabase db){
+    private Long getCandidatoIdByOrder(SQLiteDatabase db){
+        return getCandidatoIdByOrder(db,0);
+    }
+    private Long getCandidatoIdByOrder(SQLiteDatabase db, int order){
         Cursor c = getCursorTodosOsCandidatos(db);
 
         int idxId = c.getColumnIndex(HunterAppContract.Candidato._ID);
-        c.moveToFirst();
+        c.moveToPosition(order);
         if (c.getCount()>0) {
             Long idCandidato = c.getLong(idxId);
             return idCandidato;
@@ -144,12 +164,15 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    private Long getProducaoIdByOrder(SQLiteDatabase db, Long candidatoId){
+        return getProducaoIdByOrder(db,candidatoId,0);
+    }
 
-    private Long getPrimeiraProducaoId(SQLiteDatabase db, Long candidatoId){
+    private Long getProducaoIdByOrder(SQLiteDatabase db, Long candidatoId, int order){
         Cursor c = getCursorTodasAsProducoesByCandidatoId(db,candidatoId);
 
         int idxId = c.getColumnIndex(HunterAppContract.Producao._ID);
-        c.moveToFirst();
+        c.moveToPosition(order);
         if (c.getCount()>0) {
             Long idProducao = c.getLong(idxId);
             return idProducao;
