@@ -11,6 +11,8 @@ public class Producao {
     private Long categoriaId;
     private Long candidatoId;
 
+    private Double sumHorasAtividades;
+
     public Producao() {;
     }
 
@@ -86,6 +88,14 @@ public class Producao {
 
     public void setCandidatoId(Long candidatoId) {
         this.candidatoId = candidatoId;
+    }
+
+    public Double getSumHorasAtividades() {
+        return sumHorasAtividades;
+    }
+
+    public void setSumHorasAtividades(Double sumHorasAtividades) {
+        this.sumHorasAtividades = sumHorasAtividades;
     }
 
     @Override

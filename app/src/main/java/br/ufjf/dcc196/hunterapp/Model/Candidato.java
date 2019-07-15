@@ -9,6 +9,8 @@ public class Candidato {
     private String perfil;
     private String email;
 
+    private Double sumHorasAtividades;
+
 
     public Candidato() {
     }
@@ -75,6 +77,14 @@ public class Candidato {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Double getSumHorasAtividades() {
+        return sumHorasAtividades;
+    }
+
+    public void setSumHorasAtividades(Double sumHorasAtividades) {
+        this.sumHorasAtividades = sumHorasAtividades;
     }
 
     @Override

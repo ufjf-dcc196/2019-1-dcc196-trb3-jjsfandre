@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import br.ufjf.dcc196.hunterapp.*;
 import br.ufjf.dcc196.hunterapp.DB.*;
@@ -15,6 +16,8 @@ public class CategoriaDetalheActivity extends AppCompatActivity {
 
     public EditText titulo;
     public Categoria categoria;
+
+    public static final int REQUEST_CANDIDATO_POR_CATEGORIA = 900;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,18 @@ public class CategoriaDetalheActivity extends AppCompatActivity {
                 Intent resultado = new Intent();
                 setResult(RESULT_OK, resultado);
                 finish();
+            }
+        });
+        Button btnListarCandidatoPorCategoria = findViewById(R.id.btnListarCandidatoPorCategoria);
+
+        btnListarCandidatoPorCategoria.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(CategoriaDetalheActivity.this, CandidatoPorCategoriaActivity.class);
+                intent.putExtra("idCategoria", categoria.getId());
+
+                startActivityForResult(intent, REQUEST_CANDIDATO_POR_CATEGORIA);
             }
         });
     }

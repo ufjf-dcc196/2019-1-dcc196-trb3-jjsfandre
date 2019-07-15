@@ -8,14 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.ufjf.dcc196.hunterapp.Model.*;
 
 public class HunterAppDBHelper extends SQLiteOpenHelper {
     //region Padrao
 
-    public static final int DATABASE_VERSION=10;
+    public static final int DATABASE_VERSION=11;
     public static final String DATABASE_NAME="ToDoList";
 
     public HunterAppDBHelper(Context context){
@@ -89,12 +92,16 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
     private void addProducaoData(SQLiteDatabase db){
 
         Long categoriaId = getCategoriaIdByOrder(db);
+        Long categoriaId2 = getCategoriaIdByOrder(db,1);
         Long candidatoId = getCandidatoIdByOrder(db);
         Long candidatoId2 = getCandidatoIdByOrder(db,1);
+        Long candidatoId3 = getCandidatoIdByOrder(db,2);
         Producao p1 = new Producao("Producao 1", "Descrição 1", "20/04/2019", "10/05/2019",categoriaId,candidatoId);
         Producao p2 = new Producao("Producao 2", "Descrição 2", "20/05/2019", "10/06/2019",categoriaId,candidatoId);
         Producao p3 = new Producao("Producao 3", "Descrição 3", "20/06/2019", "10/07/2019",categoriaId,candidatoId);
         Producao p4 = new Producao("Producao 4", "Descrição 4", "20/07/2019", "10/08/2019",categoriaId,candidatoId2);
+        Producao p5 = new Producao("Producao 5", "Descrição 5", "20/08/2019", "10/09/2019",categoriaId2,candidatoId3);
+        Producao p6 = new Producao("Producao 6", "Descrição 6", "20/09/2019", "10/10/2019",categoriaId2,candidatoId2);
 
         ContentValues values = populateContentValueProducao(p1);
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
@@ -107,16 +114,28 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
 
         values = populateContentValueProducao(p4);
         db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
+
+        values = populateContentValueProducao(p5);
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
+
+        values = populateContentValueProducao(p6);
+        db.insert(HunterAppContract.Producao.TABLE_NAME,null,values);
     }
 
     private void addAtividadeData(SQLiteDatabase db){
         Long producaoId = getProducaoIdByOrder(db, getCandidatoIdByOrder(db));
         Long producaoId2 = getProducaoIdByOrder(db, getCandidatoIdByOrder(db,1));
+        Long producaoId3 = getProducaoIdByOrder(db, getCandidatoIdByOrder(db,2));
+        Long producaoId4 = getProducaoIdByOrder(db, getCandidatoIdByOrder(db,1),1);
         Atividade a1 = new Atividade("Atividade 1", "10/04/2019",100.0,producaoId);
         Atividade a2 = new Atividade("Atividade 2", "10/05/2019",200.0,producaoId);
         Atividade a3 = new Atividade("Atividade 3", "10/06/2019",250.0,producaoId);
         Atividade a4 = new Atividade("Atividade 4", "10/07/2019",50.0,producaoId2);
         Atividade a5 = new Atividade("Atividade 5", "10/08/2019",50.0,producaoId2);
+        Atividade a6 = new Atividade("Atividade 6", "10/09/2019",2.0,producaoId3);
+        Atividade a7 = new Atividade("Atividade 7", "10/10/2019",5.0,producaoId3);
+        Atividade a8 = new Atividade("Atividade 8", "10/09/2019",1.0,producaoId4);
+        Atividade a9 = new Atividade("Atividade 9", "10/10/2019",2.0,producaoId4);
 
 
         ContentValues values = populateContentValueAtividade(a1);
@@ -132,6 +151,18 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
 
         values = populateContentValueAtividade(a5);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a6);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a7);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a8);
+        db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
+
+        values = populateContentValueAtividade(a9);
         db.insert(HunterAppContract.Atividade.TABLE_NAME,null,values);
     }
 
@@ -333,6 +364,40 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
         db.insert(HunterAppContract.Candidato.TABLE_NAME,null,values);
     }
 
+    public List<Candidato> getListCandidatosPorCategoria(Long idCategoria){
+        List<Candidato> result = new ArrayList<Candidato>();
+        List<Producao> producoes = getProducaoByCategoriaId(idCategoria);
+        List<Long> listaCandidatosIds = new ArrayList<>();
+
+        Map<Long, Double> candidatosComSomaDeHoras = new HashMap<Long, Double>();
+
+        for (Producao producao : producoes) {
+            Long key =producao.getCandidatoId();
+            Double sum = 0.0;
+            if (candidatosComSomaDeHoras.containsKey(key))
+                sum = candidatosComSomaDeHoras.get(key);
+            else
+                listaCandidatosIds.add(key);
+            candidatosComSomaDeHoras.put(key,sum+producao.getSumHorasAtividades());
+        }
+
+        for (Long idCandidato :
+                listaCandidatosIds) {
+            Candidato candidato = getCandidatoById(idCandidato);
+            candidato.setSumHorasAtividades(candidatosComSomaDeHoras.get(idCandidato));
+            result.add(candidato);
+        }
+
+        Collections.sort(result, (d1, d2) -> {
+            if (d1.getSumHorasAtividades()<d2.getSumHorasAtividades())
+                return 1;
+            else
+                return -1;
+        });
+        
+        return result;
+    }
+
     //endregion
 
     //region Producao
@@ -402,6 +467,55 @@ public class HunterAppDBHelper extends SQLiteOpenHelper {
             return new Producao(idProducao,titulo,descricao,inicio,fim,categoria,candidato);
         }
         return null;
+    }
+
+    public List<Producao> getProducaoByCategoriaId(Long idCategoria){
+        List<Producao> result = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selecao = HunterAppContract.Producao.COLUMN_CATEGORIA+ "= ?";
+        String[] args = {idCategoria.toString()};
+        Cursor c = db.query(HunterAppContract.Producao.TABLE_NAME,camposProducao,selecao,args,null,null,null);
+
+        c.move(-1);
+
+        int idxId = c.getColumnIndex(HunterAppContract.Producao._ID);
+        int idxTitulo = c.getColumnIndex(HunterAppContract.Producao.COLUMN_TITULO);
+        int idxDescricao = c.getColumnIndex(HunterAppContract.Producao.COLUMN_DESCRICAO);
+        int idxInicio = c.getColumnIndex(HunterAppContract.Producao.COLUMN_INICIO);
+        int idxFim = c.getColumnIndex(HunterAppContract.Producao.COLUMN_FIM);
+        int idxCategoria = c.getColumnIndex(HunterAppContract.Producao.COLUMN_CATEGORIA);
+        int idxCandidato = c.getColumnIndex(HunterAppContract.Producao.COLUMN_CANDIDATO);
+
+        while(c.moveToNext()){
+            Long id = c.getLong(idxId);
+            String titulo = c.getString(idxTitulo);
+            String descricao = c.getString(idxDescricao);
+            String inicio = c.getString(idxInicio);
+            String fim = c.getString(idxFim);
+            Long categoriaId = c.getLong(idxCategoria);
+            Long candidatoId = c.getLong(idxCandidato);
+            Double sumHoras = getSumHorasByProducaoId(db,id);
+            Producao producao = new Producao(id, titulo, descricao, inicio, fim, categoriaId, candidatoId);
+            producao.setSumHorasAtividades(sumHoras);
+
+            result.add(producao);
+        }
+        return result;
+    }
+
+    private Double getSumHorasByProducaoId(SQLiteDatabase db, Long idProducao){
+        String selecao = HunterAppContract.Atividade.COLUMN_PRODUCAO+ "= ?";
+        String[] args = {idProducao.toString()};
+        Cursor c = db.query(HunterAppContract.Atividade.TABLE_NAME,camposAtividade,selecao,args,null,null,null);
+
+
+        c.move(-1);
+        Double result = 0.0;
+        int idxHoras = c.getColumnIndex(HunterAppContract.Atividade.COLUMN_HORAS);
+        while(c.moveToNext()){
+            result += c.getDouble(idxHoras);
+        }
+        return result;
     }
 
     public void atualizarProducao(Producao c){
